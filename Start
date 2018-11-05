@@ -1,0 +1,60 @@
+#!/bin/bash
+
+#====================================================================================================
+#  Function list
+#====================================================================================================
+
+#####################################
+## OS Check For Directory Creation ##
+#####################################
+function check_OS {
+	whatami=$(cpstat os | grep 'OS Name' | awk '{print $3, $4}' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+if [[ $whatami == "Gaia" ]]; then
+    mkdir /var/log/debug/
+    start_directory=/var/log/debug
+elif [[ $whatami == "Gaia Embedded" ]]; then
+    mkdir /storage/debug
+    start_directory=/storage/debug
+fi
+}
+
+################################
+## File Move to New Directory ##
+################################
+function move {
+	mv allscript.tar $start_directory
+	mv Start $start_directory
+	cd $start_directory
+}
+
+###########
+## Untar ##
+###########
+function untar {
+	tar -xvf allscript.tar
+}
+
+#################
+## Permissions ##
+#################
+function permissions {
+	dos2unix $start_directory/*
+	chmod 777 $start_directory/*
+}
+
+##############
+## Continue ##
+##############
+function menu {
+	./Menu.sh
+}
+
+#====================================================================================================
+#  Main Script Menu
+#====================================================================================================
+
+check_OS
+move
+untar
+permissions
+menu
